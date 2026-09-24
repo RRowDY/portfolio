@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { ProjectsSection } from "@/components/projects/projects-section";
 
 export default function ProjectsPage() {
@@ -12,7 +13,13 @@ export default function ProjectsPage() {
                     Filter by tag to explore work by area.
                 </p>
 
-                <ProjectsSection />
+                <Suspense
+                    fallback={
+                        <p className="mt-10 text-muted">Loading projects...</p>
+                    }
+                >
+                    <ProjectsSection />
+                </Suspense>
             </div>
         </main>
     );

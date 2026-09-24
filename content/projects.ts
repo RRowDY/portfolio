@@ -83,4 +83,8 @@ export function getProjectTag(id: string) {
     return null;
 }
 
+export function getProjectBySlug(slug: string) {
+    return projects.find((project) => project.slug === slug);
+}
+
 export const allProjectTags = Object.values(projectTags);

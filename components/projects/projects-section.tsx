@@ -1,14 +1,33 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { projects, type Project, type ProjectTagId } from "@/content/projects";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+    getProjectBySlug,
+    projects,
+    type Project,
+    type ProjectTagId,
+} from "@/content/projects";
 import { ProjectCard } from "@/components/projects/project-card";
 import { ProjectModal } from "@/components/projects/project-modal";
 import { TagFilter } from "@/components/projects/tag-filter";
 
 export function ProjectsSection() {
+    const pathname = usePathname();
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    
     const [selectedTagIds, setSelectedTagIds] = useState<ProjectTagId[]>([]);
     const [openSlug, setOpenSlug] = useState<string | null>(null);
+
+    useEffect(() => {
+        const slugFromUrl = searchParams.get("project");
+        if (!slugFromUrl) {
+            setOpenSlug(null);
+            return;
+        }
+        setOpenSlug(getProjectBySlug(slugFromUrl) ? slugFromUrl : null);
+    }, [searchParams]);
 
     const filteredProjects = useMemo(() => {
         if (selectedTagIds.length === 0) return projects;
@@ -22,6 +41,26 @@ export function ProjectsSection() {
         openSlug == null
             ? null
             : projects.find((p) => p.slug === openSlug) ?? null;
+
+    const openModal = useCallback(
+        (slug: string) => {
+            setOpenSlug(slug);
+            const params = new URLSearchParams(searchParams.toString());
+            params.set("project", slug);
+            router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        },
+        [pathname, router, searchParams],
+    );
+    
+    const closeModal = useCallback(() => {
+        setOpenSlug(null);
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("project");
+        const query = params.toString();
+        router.replace(query ? `${pathname}?${query}` : pathname, {
+            scroll: false,
+        });
+    }, [pathname, router, searchParams]);
 
     return (
         <>
@@ -40,7 +79,7 @@ export function ProjectsSection() {
                         <ProjectCard
                             key={project.slug}
                             project={project}
-                            onSelect={() => setOpenSlug(project.slug)}
+                            onSelect={() => openModal(project.slug)}
                         />
                     ))}
                 </div>
@@ -48,7 +87,7 @@ export function ProjectsSection() {
 
             <ProjectModal
                 project={openProject}
-                onClose={() => setOpenSlug(null)}
+                onClose={closeModal}
             />
         </>
     );
