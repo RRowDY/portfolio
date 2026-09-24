@@ -31,6 +31,7 @@ body {
   min-height: 100vh;
   color: var(--foreground);
   background-color: var(--bg-deep);
+  background-attachment: fixed;
   background-image:
     radial-gradient(
       ellipse 120% 80% at 50% -30%,
