@@ -5,22 +5,26 @@ import {
     useEffect,
     useRef,
     useState,
+    type KeyboardEvent,
     type MouseEvent,
 } from "react";
 import { getProjectTag, type Project } from "@/content/projects";
-import { TagPill } from "./tag-pill";
+import { TagPill } from "@/components/projects/tag-pill";
 
 type ProjectCardProps = {
     project: Project;
+    onSelect?: () => void;
 };
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project, onSelect }: ProjectCardProps) {
     const frameRef = useRef<HTMLDivElement>(null);
-    const [tilt, setTilt] = useState({rotateX: 0, rotateY: 0});
+    const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
     const [reduceMotion, setReduceMotion] = useState(true);
 
     useEffect(() => {
-        setReduceMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+        setReduceMotion(
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+        );
     }, []);
 
     function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
@@ -30,16 +34,33 @@ export function ProjectCard({ project }: ProjectCardProps) {
         const x = (event.clientX - rect.left) / rect.width - 0.5;
         const y = (event.clientY - rect.top) / rect.height - 0.5;
 
-        setTilt({rotateX: -y * 10, rotateY: x * 10});
+        setTilt({ rotateX: -y * 10, rotateY: x * 10 });
     }
 
     function handleMouseLeave() {
-        setTilt({rotateX: 0, rotateY: 0});
+        setTilt({ rotateX: 0, rotateY: 0 });
     }
+
+    function handleKeyDown(event: KeyboardEvent<HTMLElement>) {
+        if (!onSelect) return;
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onSelect();
+        }
+    }
+
+    const interactive = Boolean(onSelect);
 
     return (
         <article
-            className="flex flex-col overflow-hidden rounded-xl border border-border bg-elevated/50"
+            className={[
+                "flex flex-col overflow-hidden rounded-xl border border-border bg-elevated/50",
+                interactive ? "cursor-pointer" : "",
+            ].join(" ")}
+            onClick={onSelect}
+            onKeyDown={handleKeyDown}
+            role={interactive ? "button" : undefined}
+            tabIndex={interactive ? 0 : undefined}
         >
             <div
                 ref={frameRef}
@@ -63,6 +84,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
             </div>
+
             <div className="flex flex-1 flex-col gap-3 p-4">
                 <div className="flex flex-wrap gap-2">
                     {project.tags.map((tagId) => {
@@ -77,9 +99,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
                         );
                     })}
                 </div>
+
                 <h2 className="font-display text-lg font-semibold text-foreground">
                     {project.title}
                 </h2>
+
                 <p className="text-sm leading-relaxed text-muted">
                     {project.shortDescription}
                 </p>
@@ -87,56 +111,3 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </article>
     );
 }
-
-// import Image from "next/image";
-// import { getProjectTag, type Project } from "@/content/projects";
-// import { TagPill } from "./tag-pill";
-
-// type ProjectCardProps = {
-//     project: Project;
-// };
-
-// export function ProjectCard({ project }: ProjectCardProps) {
-//     return (
-//         <article
-//             className="flex flex-col overflow-hidden rounded-xl border border-border bg-elevated/50"
-//         >
-//             <div className="relative aspect-video overflow-hidden">
-//                 <Image
-//                     src={project.thumbnail.src}
-//                     alt={project.thumbnail.alt}
-//                     fill
-//                     className="object-cover"
-//                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-//                     priority
-//                     placeholder="blur"
-//                     blurDataURL={project.thumbnail.src}
-//                 />
-//             </div>
-
-//             <div className="flex flex-1 flex-col gap-3 p-4">
-//                 <div className="flex flex-wrap gap-2">
-//                     {project.tags.map((tagId) => {
-//                         const tag = getProjectTag(tagId);
-//                         if (!tag) return null;
-//                         return (
-//                             <TagPill
-//                                 key={tag.id}
-//                                 label={tag.label}
-//                                 className={tag.className}
-//                             />
-//                         );
-//                     })}
-//                 </div>
-
-//                 <h2 className="font-display text-lg font-semibold text-foreground">
-//                     {project.title}
-//                 </h2>
-
-//                 <p className="text-sm leading-relaxed text-muted">
-//                     {project.shortDescription}
-//                 </p>
-//             </div>
-//         </article>
-//     );
-// }
