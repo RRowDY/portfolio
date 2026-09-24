@@ -60,8 +60,9 @@ export function ContactForm() {
     return (
         <form onSubmit={onSubmit} className="mt-8 space-y-6" noValidate>
             {/* Honeypot protection */}
-            <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">"
+            <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
                 <label htmlFor="company" className="sr-only">Company</label>
+                <input type="text" id="company" name="company" tabIndex={-1} autoComplete="off" />
             </div>
 
             <div>
@@ -88,13 +89,19 @@ export function ContactForm() {
             </button>
 
             {status === "success" && (
-                <p className="text-sm text-accent-bright" role="status">
+                <p
+                    role="status"
+                    className="rounded-lg border border-accent/30 bg-elevated/80 px-4 py-3 text-sm text-accent-bright"
+                >
                     Thanks! Your message was sent. I&apos;ll get back to you as soon as possible.
                 </p>
             )}
 
             {status === "error" && (
-                <p className="text-sm text-red-500" role="alert">
+                <p
+                    role="alert"
+                    className="rounded-lg border border-red-500/30 bg-elevated/80 px-4 py-3 text-sm text-red-400"
+                >
                     {errorMessage}
                 </p>
             )}
