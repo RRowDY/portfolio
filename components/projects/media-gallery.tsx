@@ -24,6 +24,7 @@ export function MediaGallery({ images }: MediaGalleryProps) {
                     src={active.src}
                     alt={active.alt}
                     fill
+                    quality={90}
                     className="object-cover"
                     sizes="(max-width: 896px) 100vw, 896px"
                     priority
@@ -48,7 +49,8 @@ export function MediaGallery({ images }: MediaGalleryProps) {
                                 src={image.src}
                                 alt={image.alt}
                                 fill
-                                className="object-cover"
+                                quality={100}
+                                className="object-contain"
                                 sizes="112px"
                             />
                         </button>
