@@ -1,5 +1,15 @@
 import { site } from "@/content/site";
-import { socialIconById, type SocialIconId } from "@/components/icons/social-icons";
+// import { socialIconById, type SocialIconId } from "@/components/icons/social-icons";
+import type { IconType } from "react-icons";
+import { FaLinkedinIn } from "react-icons/fa6";
+import { SiGithub } from "react-icons/si";
+
+const socialIconById = {
+    github: SiGithub,
+    linkedin: FaLinkedinIn,
+} as const satisfies Record<string, IconType>;
+
+type SocialIconId = keyof typeof socialIconById;
 
 const ICON_SLOT = "2.25rem";
 
