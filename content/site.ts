@@ -14,5 +14,17 @@ export const site = {
       label: "Contact",
       href: "/contact",
     },
-],
+  ],
+  socialLinks: [
+    {
+      id: "github",
+      label: "GitHub",
+      href: "https://github.com/RRowDY",
+    },
+    {
+      id: "linkedin",
+      label: "LinkedIn",
+      href: "https://www.linkedin.com/in/joshua-dev/",
+    },
+  ],
 } as const;
