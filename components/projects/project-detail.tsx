@@ -42,7 +42,7 @@ export function ProjectDetail({ project, variant = "page" }: ProjectDetailProps)
                         <p className="mb-2 text-xs font-medium uppercase tracking-wide text-subtle">
                             Tech stack
                         </p>
-                        <TechStack tech={project.techStack} />
+                        <TechStack techIds={project.techStack} />
                     </div>
                 )}
                 <dl className="flex flex-wrap gap-x-6 gap-y-2 text-sm">

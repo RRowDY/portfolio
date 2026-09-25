@@ -25,6 +25,22 @@
   --color-accent-bright: var(--accent-bright);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-plus-jakarta-sans), var(--font-sans);
+  --animate-scroll-hint-bounce: scroll-hint-bounce 2.4s ease-in-out infinite;
+}
+
+@keyframes scroll-hint-bounce {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, 0.4rem, 0);
+  }
+}
+
+html {
+  scroll-snap-type: y proximity;
 }
 
 body {
@@ -33,15 +49,11 @@ body {
   background-color: var(--bg-deep);
   background-attachment: fixed;
   background-image:
-    radial-gradient(
-      ellipse 120% 80% at 50% -30%,
+    radial-gradient(ellipse 120% 80% at 50% -30%,
       var(--accent-glow),
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 60% 40% at 100% 0%,
+      transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 0%,
       rgba(29, 78, 216, 0.12),
-      transparent 50%
-    ),
+      transparent 50%),
     linear-gradient(180deg, var(--bg-base) 0%, var(--bg-deep) 45%, #0c0f14 100%);
 }

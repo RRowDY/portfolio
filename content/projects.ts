@@ -23,11 +23,6 @@ export type ProjectLink = {
     href: string;
 };
 
-export type TechItem = {
-    id: string;
-    name: string;
-};
-
 export type Project = {
     slug: string;
     title: string;
@@ -36,7 +31,7 @@ export type Project = {
     thumbnail: { src: string; alt: string };
     description?: string;
     gallery?: { src: string; alt: string }[];
-    techStack?: TechItem[];
+    techStack?: string[];
     client?: string;
     completedAt?: string;
     links?: ProjectLink[];
@@ -56,8 +51,8 @@ export const projects: Project[] = [
             { src: "/images/project-1.jpg", alt: "Project 1 detail" },
         ],
         techStack: [
-            { id: "nextjs", name: "Next.js" },
-            { id: "typescript", name: "TypeScript" },
+            "nextjs",
+            "typescript",
         ],
         client: "Personal",
         completedAt: "2024",
@@ -71,7 +66,7 @@ export const projects: Project[] = [
         thumbnail: { src: "/images/project-2.webp", alt: "Project 2" },
         description: "Another full description for the modal.",
         gallery: [{ src: "/images/project-2.webp", alt: "Project 2" }],
-        techStack: [{ id: "react", name: "React" }],
+        techStack: ["react", "postgresql"],
         completedAt: "2025",
     },
 ];
