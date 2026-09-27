@@ -49,11 +49,15 @@ body {
   background-color: var(--bg-deep);
   background-attachment: fixed;
   background-image:
-    radial-gradient(ellipse 120% 80% at 50% -30%,
+    radial-gradient(
+      ellipse 120% 80% at 50% -30%,
       var(--accent-glow),
-      transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 100% 0%,
       rgba(29, 78, 216, 0.12),
-      transparent 50%),
+      transparent 50%
+    ),
     linear-gradient(180deg, var(--bg-base) 0%, var(--bg-deep) 45%, #0c0f14 100%);
 }
