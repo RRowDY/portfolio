@@ -2,12 +2,14 @@ import { site } from "@/content/site";
 import { HeroSocialLinks } from "@/components/hero-social-links";
 import { HeroScrollCue } from "@/components/hero-scroll-cue";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { AboutMeSection } from "@/components/about-me-section";
 import { TechIconTile } from "@/components/tech-icon-tile";
 import {
   techCatalog,
   techCategoryOrder,
   techCategoryTitles,
 } from "@/content/tech";
+import Link from "next/link";
 
 const techCategories = techCategoryOrder.map((categoryId) => ({
   title: techCategoryTitles[categoryId],
@@ -39,7 +41,10 @@ function TechStackSection() {
               <h3 className="text-sm font-semibold uppercase tracking-wider text-muted">
                 {category.title}
               </h3>
-              <ul className="mt-4 flex flex-wrap justify-center gap-3" role="list">
+              <ul
+                className="mt-4 flex flex-wrap justify-center gap-3"
+                role="list"
+              >
                 {category.items.map(({ name, Icon }) => (
                   <li key={name} role="listitem">
                     <TechIconTile name={name} Icon={Icon} />
@@ -51,7 +56,7 @@ function TechStackSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 export default function Home() {
@@ -86,8 +91,7 @@ export default function Home() {
         <div className="mx-auto w-full max-w-4xl">
           <p className="text-sm font-medium text-accent-bright">Portfolio</p>
           <h1 className="mt-3 font-display text-5xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-            Hi, I&apos;m{" "}
-            <span className="text-accent-bright">{site.name}</span>
+            Hi, I&apos;m <span className="text-accent-bright">{site.name}</span>
           </h1>
           <div className="mt-8 flex justify-center">
             <HeroSocialLinks />
@@ -96,12 +100,12 @@ export default function Home() {
             {site.description}
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-            <a
+            <Link
               href="/projects"
               className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-bright"
             >
               View projects
-            </a>
+            </Link>
             <a
               href="/contact"
               className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-bright"
@@ -112,6 +116,7 @@ export default function Home() {
         </div>
         <HeroScrollCue />
       </section>
+      <AboutMeSection />
       <TechStackSection />
     </main>
   );
