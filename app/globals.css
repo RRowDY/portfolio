@@ -25,17 +25,25 @@
   --color-accent-bright: var(--accent-bright);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-plus-jakarta-sans), var(--font-sans);
-  --animate-scroll-hint-bounce: scroll-hint-bounce 2.4s ease-in-out infinite;
+  --animate-scroll-hint-line: scroll-hint-line 1.6s ease-out infinite;
 }
 
-@keyframes scroll-hint-bounce {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
+@keyframes scroll-hint-line {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
   }
-
-  50% {
-    transform: translate3d(0, 0.4rem, 0);
+  48% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  52% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
   }
 }
 
