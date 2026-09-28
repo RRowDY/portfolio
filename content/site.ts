@@ -3,28 +3,28 @@ export const site = {
   description:
     "I'm a junior software and web developer. I build sites and interfaces, and I'm working toward full stack and apps.",
   about: {
-    lead: "I'm a junior software and web developer, building for the web and working toward full stack and apps.",
-    body: "I build sites and interfaces people can actually move through: clear layouts, responsive screens, and the small details that keep a flow from stalling. I'm learning the back end next to that — data, server logic, and how the two sides fit — so I can ship more than a page, including apps with a real job to do.",
+    lead: "I'm Joshua, a freelance designer and developer specializing in brand identity and website design and development.",
+    body: "I handle both design and development, which keeps the final product faithful to the original vision. My work is grounded in clear layouts, intuitive navigation, and careful attention to detail.",
     highlights: [
       {
-        label: "Web",
-        title: "Sites and interfaces",
-        text: "I build pages and UI in the browser, from a first layout to something that loads, responds, and stays readable on different screens.",
+        label: "Brand Identity",
+        title: "Cohesive visual systems",
+        text: "Logo design, color, and typography developed as a unified system, so your brand stays consistent across your website and every other touchpoint.",
       },
       {
-        label: "Use",
-        title: "Flows people can finish",
-        text: "Navigation, empty states, and small interactions count. A feature is in good shape when someone can follow it without guessing.",
+        label: "Website Design & Development",
+        title: "Responsive, well-built websites",
+        text: "From initial layout to launch, I build sites that perform reliably and read clearly on every screen size.",
       },
       {
-        label: "Stack",
-        title: "Front end, then both sides",
-        text: "I'm junior and strongest in the front end today. I'm growing into APIs, databases, and server logic so the same project can live on both sides.",
+        label: "User Experience",
+        title: "Interfaces that are easy to use",
+        text: "Navigation, empty states, and small interactions are designed so users can complete tasks without confusion.",
       },
       {
-        label: "Apps",
-        title: "Products people open",
-        text: "The aim is full stack work and apps, not only a single page: the screen, the data behind it, and a job the product actually does.",
+        label: "Technical Focus",
+        title: "Front end expertise, expanding to full stack",
+        text: "My core strength is front-end development. I am extending my work into APIs, databases, and server-side logic to deliver more of each project end to end.",
       },
     ],
   },
