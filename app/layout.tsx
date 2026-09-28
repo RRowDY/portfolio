@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
+import { CustomCursor } from "@/components/custom-cursor";
 
 const interFont = Inter({
   variable: "--font-inter",
@@ -24,7 +25,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${interFont.variable} ${plusJakartaSansFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans text-foreground"><SiteHeader />{children}</body>
+      <body className="min-h-full flex flex-col font-sans text-foreground">
+        <CustomCursor />
+        <SiteHeader />
+        {children}
+      </body>
     </html>
   );
 }

@@ -69,3 +69,57 @@ body {
     ),
     linear-gradient(180deg, var(--bg-base) 0%, var(--bg-deep) 45%, #0c0f14 100%);
 }
+
+html.custom-cursor,
+html.custom-cursor * {
+  cursor: none !important;
+}
+
+html.custom-cursor input,
+html.custom-cursor textarea,
+html.custom-cursor select,
+html.custom-cursor [contenteditable="true"] {
+  cursor: text !important;
+}
+
+.custom-cursor-ring,
+.custom-cursor-dot,
+.custom-cursor-ring-shape,
+.custom-cursor-dot-shape {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+.custom-cursor-ring {
+  transition: transform 30ms ease-out;
+}
+.custom-cursor-dot {
+  z-index: 1;
+}
+.custom-cursor-ring-shape,
+.custom-cursor-dot-shape {
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+  transition:
+    transform 200ms ease-out,
+    background-color 200ms ease-out;
+}
+.custom-cursor-ring-shape {
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--foreground);
+  background-color: transparent;
+}
+.custom-cursor-dot-shape {
+  width: 4.5px;
+  height: 4.5px;
+  background-color: var(--foreground);
+}
+.custom-cursor-root.is-hover .custom-cursor-ring-shape,
+.custom-cursor-root.is-hover .custom-cursor-dot-shape {
+  transform: translate(-50%, -50%) scale(1.25);
+}
+.custom-cursor-root.is-hover .custom-cursor-ring-shape {
+  background-color: var(--accent-glow);
+}
