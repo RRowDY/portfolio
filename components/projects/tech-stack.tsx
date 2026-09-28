@@ -1,8 +1,4 @@
-import {
-  getTechById,
-  type TechCatalogItem,
-  type TechCategoryId,
-} from "@/content/tech";
+import { getTechById, type TechCategoryId } from "@/content/tech";
 
 const modalCategories = [
   "frontend",
@@ -23,7 +19,7 @@ type TechStackProps = {
 export function TechStack({ techIds }: TechStackProps) {
   const items = techIds
     .map((id) => getTechById(id))
-    .filter((item): item is TechCatalogItem => item !== null);
+    .filter((item) => item !== undefined);
 
   const groups = modalCategories
     .map((category) => ({

@@ -37,46 +37,22 @@ export type Project = {
   links?: ProjectLink[];
 };
 
-export const projects: Project[] = [
-  {
-    slug: "project-1",
-    title: "Project 1",
-    shortDescription: "Project 1 description",
-    tags: ["web", "software"],
-    thumbnail: { src: "/images/project-1.png", alt: "Project 1" },
-    description:
-      "Longer write-up for the modal. What it does, what you learned, outcomes.",
-    gallery: [
-      { src: "/images/project-1.jpg", alt: "Project 1 main" },
-      { src: "/images/project-1.jpg", alt: "Project 1 detail" },
-    ],
-    techStack: ["nextjs", "typescript", "git"],
-    client: "Personal",
-    completedAt: "2024",
-    links: [{ label: "Live site", href: "https://example.com" }],
-  },
-  {
-    slug: "project-2",
-    title: "Project 2",
-    shortDescription: "Project 2 description",
-    tags: ["web", "graphics"],
-    thumbnail: { src: "/images/project-2.webp", alt: "Project 2" },
-    description: "Another full description for the modal.",
-    gallery: [{ src: "/images/project-2.webp", alt: "Project 2" }],
-    techStack: ["react", "postgresql"],
-    completedAt: "2025",
-  },
-];
+export type ProjectSummary = Pick<
+  Project,
+  | "slug"
+  | "title"
+  | "shortDescription"
+  | "tags"
+  | "thumbnail"
+  | "techStack"
+  | "links"
+>;
 
 export function getProjectTag(id: string) {
   if (id in projectTags) {
     return projectTags[id as ProjectTagId];
   }
   return null;
-}
-
-export function getProjectBySlug(slug: string) {
-  return projects.find((project) => project.slug === slug);
 }
 
 export const allProjectTags = Object.values(projectTags);

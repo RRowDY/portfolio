@@ -4,7 +4,7 @@ import Image from "next/image";
 import { FaLink } from "react-icons/fa6";
 import { SiGithub } from "react-icons/si";
 import { useSyncExternalStore, useRef, useState, type MouseEvent } from "react";
-import { getProjectTag, type Project } from "@/content/projects";
+import { getProjectTag, type ProjectSummary } from "@/content/projects";
 import { getTechById } from "@/content/tech";
 import { TagPill } from "@/components/projects/tag-pill";
 import { TechIconTile } from "@/components/tech-icon-tile";
@@ -23,9 +23,10 @@ function getReducedMotionServerSnapshot() {
 }
 
 type ProjectCardProps = {
-  project: Project;
+  project: ProjectSummary;
   onSelect?: () => void;
   flipped?: boolean;
+  priority?: boolean;
 };
 
 function LinkIcon({ href }: { href: string }) {
@@ -37,6 +38,7 @@ export function ProjectCard({
   project,
   onSelect,
   flipped = false,
+  priority = false,
 }: ProjectCardProps) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
@@ -199,6 +201,7 @@ export function ProjectCard({
               quality={90}
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 640px"
+              priority={priority}
             />
           </div>
         </button>

@@ -13,12 +13,14 @@ type MediaGalleryProps = {
   images: GalleryImage[];
   onClose?: () => void;
   flush?: boolean;
+  priority?: boolean;
 };
 
 export function MediaGallery({
   images,
   onClose,
   flush = false,
+  priority = false,
 }: MediaGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const safeIndex = Math.min(activeIndex, Math.max(images.length - 1, 0));
@@ -55,7 +57,7 @@ export function MediaGallery({
         quality={90}
         className="object-cover"
         sizes="(max-width: 896px) 100vw, 896px"
-        priority
+        priority={priority}
       />
       {onClose && (
         <button

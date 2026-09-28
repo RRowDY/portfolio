@@ -114,6 +114,17 @@ html.custom-cursor [contenteditable="true"] {
   cursor: text !important;
 }
 
+.custom-cursor-root {
+  inset: 0 auto auto 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  overflow: visible;
+}
+
 .custom-cursor-ring,
 .custom-cursor-dot,
 .custom-cursor-ring-shape,
@@ -154,4 +165,14 @@ html.custom-cursor [contenteditable="true"] {
 }
 .custom-cursor-root.is-hover .custom-cursor-ring-shape {
   background-color: var(--accent-glow);
+}
+
+.project-dialog {
+  border: none;
+  overflow: visible;
+}
+
+.project-dialog::backdrop {
+  background: rgb(0 0 0 / 0.7);
+  backdrop-filter: blur(4px);
 }

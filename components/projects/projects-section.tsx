@@ -2,17 +2,20 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-  getProjectBySlug,
-  projects,
-  type Project,
-  type ProjectTagId,
-} from "@/content/projects";
+import type { Project, ProjectSummary, ProjectTagId } from "@/content/projects";
+import { filterProjectsByTags } from "@/content/filter-projects";
 import { ProjectCard } from "@/components/projects/project-card";
 import { ProjectModal } from "@/components/projects/project-modal";
 import { TagFilter } from "@/components/projects/tag-filter";
 
-export function ProjectsSection() {
+type ProjectsSectionProps = {
+  summaries: ProjectSummary[];
+  openProject: Project | null;
+};
+export function ProjectsSection({
+  summaries,
+  openProject,
+}: ProjectsSectionProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -20,17 +23,8 @@ export function ProjectsSection() {
   const [selectedTagIds, setSelectedTagIds] = useState<ProjectTagId[]>([]);
 
   const filteredProjects = useMemo(() => {
-    if (selectedTagIds.length === 0) return projects;
-
-    return projects.filter((project) =>
-      project.tags.some((tagId) => selectedTagIds.includes(tagId)),
-    );
-  }, [selectedTagIds]);
-
-  const slugFromUrl = searchParams.get("project");
-  const openProject: Project | null = slugFromUrl
-    ? (getProjectBySlug(slugFromUrl) ?? null)
-    : null;
+    return filterProjectsByTags(summaries, selectedTagIds);
+  }, [summaries, selectedTagIds]);
 
   const openModal = useCallback(
     (slug: string) => {
@@ -66,6 +60,7 @@ export function ProjectsSection() {
               project={project}
               flipped={index % 2 === 1}
               onSelect={() => openModal(project.slug)}
+              priority={index === 0}
             />
           ))}
         </div>

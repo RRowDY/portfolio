@@ -73,7 +73,7 @@ export function ProjectDetail({
           ? { backgroundColor: "var(--border)" }
           : {
               background:
-                "radial-gradient(200px circle at var(--spot-x, -1000px) var(--spot-y, -1000px), color-mix(in srgb, var(--accent-bright) 45%, var(--border) 40%)",
+                "radial-gradient(200px circle at var(--spot-x, -1000px) var(--spot-y, -1000px), var(--accent-bright), var(--border) 42%)",
             }
       }
     >
@@ -97,9 +97,11 @@ export function ProjectDetail({
           }
         >
           <MediaGallery
+            key={project.slug}
             images={gallery}
             onClose={onClose}
             flush={variant === "modal"}
+            priority={variant === "page"}
           />
           <div
             className={

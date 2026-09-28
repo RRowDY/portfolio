@@ -24,7 +24,22 @@ export function CustomCursor() {
     const syncMode = () => {
       const enabled = canUseCustomCursor();
       document.documentElement.classList.toggle("custom-cursor", enabled);
-      if (!enabled) cursor.classList.add("opacity-0");
+      if (!enabled) {
+        cursor.classList.add("opacity-0");
+        if (cursor.matches(":popover-open")) cursor.hidePopover();
+        return;
+      }
+      bringToFront();
+    };
+    const bringToFront = () => {
+      if (cursor.matches(":popover-open")) cursor.hidePopover();
+      cursor.showPopover();
+    };
+    const onDialogToggle = (event: Event) => {
+      if (!(event.target instanceof HTMLDialogElement) || !event.target.open)
+        return;
+      if (!canUseCustomCursor()) return;
+      bringToFront();
     };
 
     const onMove = (event: MouseEvent) => {
@@ -55,17 +70,21 @@ export function CustomCursor() {
     reducedMotion.addEventListener("change", syncMode);
     window.addEventListener("mousemove", onMove);
     document.addEventListener("mouseleave", onLeave);
+    document.addEventListener("toggle", onDialogToggle, true);
     return () => {
       document.documentElement.classList.remove("custom-cursor");
+      if (cursor.matches(":popover-open")) cursor.hidePopover();
       finePointer.removeEventListener("change", syncMode);
       reducedMotion.removeEventListener("change", syncMode);
       window.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseleave", onLeave);
+      document.removeEventListener("toggle", onDialogToggle, true);
     };
   }, []);
   return (
     <div
       ref={cursorRef}
+      popover="manual"
       className="custom-cursor-root pointer-events-none fixed top-0 left-0 z-[70] opacity-0"
       aria-hidden="true"
     >
