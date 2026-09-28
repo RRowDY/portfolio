@@ -5,9 +5,61 @@ import { ArrowChip } from "@/components/arrow-chip";
 
 type Status = "idle" | "loading" | "success" | "error";
 
+type FieldName = "name" | "email" | "message";
+type FieldErrors = Partial<Record<FieldName, string>>;
+
+function problemsFor(payload: {
+  name: string;
+  email: string;
+  message: string;
+}): FieldErrors {
+  const fields: FieldErrors = {};
+  const missing: FieldName[] = [];
+
+  if (!payload.name) missing.push("name");
+  if (!payload.email) missing.push("email");
+  if (!payload.message) missing.push("message");
+
+  const requiredMessage: Record<FieldName, string> = {
+    name: "Name is required",
+    email: "Email is required",
+    message: "Message is required",
+  };
+  for (const field of missing) {
+    fields[field] = requiredMessage[field];
+  }
+
+  if (payload.name && !/^[A-Za-z]+(?:[A-Za-z]+)*$/.test(payload.name))
+    fields.name = "Name can only contain letters";
+  else if (payload.name.length > 120)
+    fields.name = "Keep the name under 120 characters";
+  if (
+    payload.email &&
+    (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email) ||
+      payload.email.length > 254)
+  )
+    fields.email = "Enter a valid email address";
+  if (payload.message && payload.message.length < 10)
+    fields.message = "Write at least 10 characters";
+  else if (payload.message.length > 5000)
+    fields.message = "Keep the message under 5000 characters";
+
+  return fields;
+}
+
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+
+  function clearField(field: FieldName) {
+    setFieldErrors((current) => {
+      if (!current[field]) return current;
+      const next = { ...current };
+      delete next[field];
+      return next;
+    });
+  }
 
   async function onSubmit(event: SyntheticEvent) {
     event.preventDefault();
@@ -30,6 +82,13 @@ export function ContactForm() {
       message: String(formData.get("message") ?? "").trim(),
     };
 
+    const problems = problemsFor(payload);
+    if (Object.keys(problems).length > 0) {
+      setFieldErrors(problems);
+      setStatus("idle");
+      return;
+    }
+
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -39,9 +98,17 @@ export function ContactForm() {
         body: JSON.stringify(payload),
       });
 
-      const data = (await res.json()) as { error?: string };
+      const data = (await res.json()) as {
+        error?: string;
+        fields?: FieldErrors;
+      };
 
       if (!res.ok) {
+        if (data.fields) {
+          setFieldErrors(data.fields);
+          setStatus("idle");
+          return;
+        }
         setStatus("error");
         setErrorMessage(
           data.error ?? "Something went wrong. Please try again.",
@@ -50,6 +117,7 @@ export function ContactForm() {
       }
 
       setStatus("success");
+      setFieldErrors({});
       form.reset();
       return;
     } catch {
@@ -58,8 +126,16 @@ export function ContactForm() {
     }
   }
 
-  const inputClass =
-    "w-full rounded-lg border border-border bg-elevated/50 px-4 py-2.5 text-foreground placeholder:text-subtle outline-none transition-[border-color,box-shadow] duration-200 focus:border-accent/60 focus:ring-2 focus:ring-accent/20 disabled:opacity-60";
+  function controlClass(field: FieldName, extra = "") {
+    const border = fieldErrors[field] ? "border-red-400/40" : "border-border";
+    return [
+      "w-full rounded-lg border bg-elevated/50 px-4 py-2.5 text-foreground placeholder:text-subtle outline-none transition-[border-color,box-shadow] duration-200 focus:border-accent/60 focus:ring-2 focus:ring-accent/20 disabled:opacity-60",
+      border,
+      extra,
+    ]
+      .filter(Boolean)
+      .join(" ");
+  }
 
   return (
     <form onSubmit={onSubmit} className="mt-8 space-y-6" noValidate>
@@ -94,9 +170,21 @@ export function ContactForm() {
           required
           autoComplete="name"
           disabled={status === "loading"}
-          className={inputClass}
+          className={controlClass("name")}
+          aria-invalid={Boolean(fieldErrors.name)}
+          aria-describedby={fieldErrors.name ? "name-error" : undefined}
+          onChange={() => clearField("name")}
           placeholder="Your name"
         />
+        {fieldErrors.name && (
+          <p
+            id="name-error"
+            role="alert"
+            className="field-hint mt-1.5 text-xs text-red-300/90"
+          >
+            {fieldErrors.name}
+          </p>
+        )}
       </div>
 
       <div>
@@ -113,9 +201,21 @@ export function ContactForm() {
           required
           autoComplete="email"
           disabled={status === "loading"}
-          className={inputClass}
+          className={controlClass("email")}
+          aria-invalid={Boolean(fieldErrors.email)}
+          aria-describedby={fieldErrors.email ? "email-error" : undefined}
+          onChange={() => clearField("email")}
           placeholder="your@email.com"
         />
+        {fieldErrors.email && (
+          <p
+            id="email-error"
+            role="alert"
+            className="field-hint mt-1.5 text-xs text-red-300/90"
+          >
+            {fieldErrors.email}
+          </p>
+        )}
       </div>
 
       <div>
@@ -131,9 +231,21 @@ export function ContactForm() {
           required
           rows={5}
           disabled={status === "loading"}
-          className={`${inputClass} resize-y min-h-[120px]`}
+          className={controlClass("message", "resize-y min-h-[120px]")}
+          aria-invalid={Boolean(fieldErrors.message)}
+          aria-describedby={fieldErrors.message ? "message-error" : undefined}
+          onChange={() => clearField("message")}
           placeholder="Your message"
         />
+        {fieldErrors.message && (
+          <p
+            id="message-error"
+            role="alert"
+            className="field-hint mt-1.5 text-xs text-red-300/90"
+          >
+            {fieldErrors.message}
+          </p>
+        )}
       </div>
 
       <ArrowChip type="submit" disabled={status === "loading"}>

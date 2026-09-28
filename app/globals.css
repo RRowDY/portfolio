@@ -39,6 +39,27 @@
   }
 }
 
+@keyframes field-hint {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.field-hint {
+  animation: field-hint 220ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field-hint {
+    animation: none;
+  }
+}
+
 @keyframes scroll-hint-line {
   0% {
     transform: scaleY(0);
