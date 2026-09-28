@@ -50,7 +50,7 @@ export const projects: Project[] = [
       { src: "/images/project-1.jpg", alt: "Project 1 main" },
       { src: "/images/project-1.jpg", alt: "Project 1 detail" },
     ],
-    techStack: ["nextjs", "typescript"],
+    techStack: ["nextjs", "typescript", "git"],
     client: "Personal",
     completedAt: "2024",
     links: [{ label: "Live site", href: "https://example.com" }],

@@ -1,87 +1,192 @@
+"use client";
+
 import { getProjectTag, type Project } from "@/content/projects";
 import { MediaGallery } from "@/components/projects/media-gallery";
 import { TagPill } from "@/components/projects/tag-pill";
 import { TechStack } from "@/components/projects/tech-stack";
+import Link from "next/link";
+import { useSyncExternalStore, type MouseEvent } from "react";
+
+const REDUCED_MOTION_MEDIA_QUERY = "(prefers-reduced-motion: reduce)";
+function subscribeReducedMotion(onChange: () => void) {
+  const media = window.matchMedia(REDUCED_MOTION_MEDIA_QUERY);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+function getReducedMotionSnapshot() {
+  return window.matchMedia(REDUCED_MOTION_MEDIA_QUERY).matches;
+}
+function getReducedMotionServerSnapshot() {
+  return true;
+}
 
 type ProjectDetailProps = {
-    project: Project;
-    variant?: "page" | "modal";
+  project: Project;
+  variant?: "page" | "modal";
+  onClose?: () => void;
 };
 
-export function ProjectDetail({ project, variant = "page" }: ProjectDetailProps) {
-    const gallery = project.gallery && project.gallery.length > 0 ? project.gallery : [project.thumbnail];
-    
-    const titleId = `project-title-${project.slug}`;
-    const TitleTag = variant === "page" ? "h1" : "h2";
+export function ProjectDetail({
+  project,
+  variant = "page",
+  onClose,
+}: ProjectDetailProps) {
+  const gallery =
+    project.gallery && project.gallery.length > 0
+      ? project.gallery
+      : [project.thumbnail];
 
-    return (
-        <div className="space-y-6">
-            <MediaGallery images={gallery} />
-            <div className="space-y-4">
-                <TitleTag
-                    id={titleId}
-                    className="font-display text-2xl font-semibold text-foreground sm:text-3xl"
-                >
-                    {project.title}
-                </TitleTag>
-                <div className="flex flex-wrap gap-2">
-                    {project.tags.map((tagId) => {
-                        const tag = getProjectTag(tagId);
-                        if (!tag) return null;
-                        return (
-                            <TagPill
-                                key={tag.id}
-                                label={tag.label}
-                                className={tag.className}
-                            />
-                        );
-                    })}
-                </div>
-                {project.techStack && project.techStack.length > 0 && (
-                    <div>
-                        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-subtle">
-                            Tech stack
-                        </p>
-                        <TechStack techIds={project.techStack} />
-                    </div>
-                )}
-                <dl className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+  const titleId = `project-title-${project.slug}`;
+  const TitleTag = variant === "page" ? "h1" : "h2";
+  const reduceMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getReducedMotionServerSnapshot,
+  );
+  function handleSpotlightMove(event: MouseEvent<HTMLElement>) {
+    if (reduceMotion) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    event.currentTarget.style.setProperty(
+      "--spot-x",
+      `${event.clientX - rect.left}px`,
+    );
+    event.currentTarget.style.setProperty(
+      "--spot-y",
+      `${event.clientY - rect.top}px`,
+    );
+  }
+  function handleSpotlightLeave(event: MouseEvent<HTMLElement>) {
+    event.currentTarget.style.setProperty("--spot-x", "-1000px");
+    event.currentTarget.style.setProperty("--spot-y", "-1000px");
+  }
+
+  return (
+    <div
+      className={[
+        "group/detail relative rounded-2xl p-px text-left shadow-lg shadow-black/20",
+        variant === "modal" ? "max-h-[90vh] shadow-xl shadow-black/40" : "",
+      ].join(" ")}
+      onMouseMove={handleSpotlightMove}
+      onMouseLeave={handleSpotlightLeave}
+      style={
+        reduceMotion
+          ? { backgroundColor: "var(--border)" }
+          : {
+              background:
+                "radial-gradient(200px circle at var(--spot-x, -1000px) var(--spot-y, -1000px), color-mix(in srgb, var(--accent-bright) 45%, var(--border) 40%)",
+            }
+      }
+    >
+      <div
+        className={[
+          "relative rounded-[inherit] bg-elevated",
+          variant === "modal" ? "max-h-[inherit] overflow-hidden" : "",
+        ].join(" ")}
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover/detail:opacity-60 motion-reduce:opacity-0"
+          style={{
+            background:
+              "radial-gradient(160px circle at var(--spot-x, -1000px) var(--spot-y, -1000px), var(--accent-glow), transparent 70%)",
+          }}
+        />
+        <div
+          className={
+            variant === "modal" ? "max-h-[inherit] overflow-y-auto" : undefined
+          }
+        >
+          <MediaGallery
+            images={gallery}
+            onClose={onClose}
+            flush={variant === "modal"}
+          />
+          <div
+            className={
+              variant === "modal" ? "space-y-6 p-5 sm:p-8" : "mt-8 space-y-6"
+            }
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <TitleTag
+                id={titleId}
+                className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"
+              >
+                {project.title}
+              </TitleTag>
+              <div className="flex flex-wrap items-center gap-6 sm:gap-8">
+                {(project.client || project.completedAt) && (
+                  <dl className="flex gap-8 text-center text-sm">
                     {project.client && (
-                        <div>
-                            <dt className="text-subtle">Client</dt>
-                            <dd className="text-foreground">{project.client}</dd>
-                        </div>
+                      <div>
+                        <dt className="text-xs text-subtle">Client</dt>
+                        <dd className="mt-1 text-foreground">
+                          {project.client}
+                        </dd>
+                      </div>
                     )}
                     {project.completedAt && (
-                        <div>
-                            <dt className="text-subtle">Completed</dt>
-                            <dd className="text-foreground">
-                                {project.completedAt}
-                            </dd>
-                        </div>
+                      <div>
+                        <dt className="text-xs text-subtle">Completed</dt>
+                        <dd className="mt-1 text-foreground">
+                          {project.completedAt}
+                        </dd>
+                      </div>
                     )}
-                </dl>
+                  </dl>
+                )}
+                {variant === "modal" && (
+                  <Link
+                    href={`/projects/${project.slug}`}
+                    className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-bright"
+                  >
+                    View full page
+                  </Link>
+                )}
+              </div>
+            </div>
+            <div className="grid gap-8 border-t border-border pt-6 lg:grid-cols-[minmax(0,1fr)_16rem]">
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-2">
+                  {project.tags.map((tagId) => {
+                    const tag = getProjectTag(tagId);
+                    if (!tag) return null;
+                    return (
+                      <TagPill
+                        key={tag.id}
+                        label={tag.label}
+                        className={tag.className}
+                      />
+                    );
+                  })}
+                </div>
                 {project.description && (
-                    <p className="leading-relaxed text-muted">
-                        {project.description}
-                    </p>
+                  <p className="text-base leading-7 text-muted">
+                    {project.description}
+                  </p>
                 )}
                 {project.links && project.links.length > 0 && (
-                    <div className="flex flex-wrap gap-3 pt-2">
-                        {project.links.map((link) => (
-                            <a
-                                key={link.href}
-                                href={link.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="rounded-full bg-accent px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-bright"
-                            >
-                                {link.label}
-                            </a>
-                        ))}
-                    </div>
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    {project.links.map((link) => (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-full bg-accent px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-bright"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
                 )}
+              </div>
+              {project.techStack && project.techStack.length > 0 && (
+                <TechStack techIds={project.techStack} />
+              )}
             </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }

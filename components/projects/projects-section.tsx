@@ -59,11 +59,12 @@ export function ProjectsSection() {
       {filteredProjects.length === 0 ? (
         <p className="mt-10 text-muted">No projects match these tags.</p>
       ) : (
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredProjects.map((project) => (
+        <div className="mt-12 flex flex-col gap-8 text-left">
+          {filteredProjects.map((project, index) => (
             <ProjectCard
               key={project.slug}
               project={project}
+              flipped={index % 2 === 1}
               onSelect={() => openModal(project.slug)}
             />
           ))}
