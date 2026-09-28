@@ -1,9 +1,3 @@
-import type {
-  ContactField,
-  ContactFieldErrors,
-  ContactPayload,
-} from "./contact";
-
 export type ContactField = "name" | "email" | "message";
 export type ContactFieldErrors = Partial<Record<ContactField, string>>;
 export type ContactPayload = {
