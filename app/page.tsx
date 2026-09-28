@@ -9,7 +9,7 @@ import {
   techCategoryOrder,
   techCategoryTitles,
 } from "@/content/tech";
-import Link from "next/link";
+import { ArrowChip } from "@/components/arrow-chip";
 
 const techCategories = techCategoryOrder.map((categoryId) => ({
   title: techCategoryTitles[categoryId],
@@ -100,18 +100,8 @@ export default function Home() {
             {site.description}
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-            <Link
-              href="/projects"
-              className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-bright"
-            >
-              View projects
-            </Link>
-            <a
-              href="/contact"
-              className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-bright"
-            >
-              Contact
-            </a>
+            <ArrowChip href="/projects">View projects</ArrowChip>
+            <ArrowChip href="/contact">Contact</ArrowChip>
           </div>
         </div>
         <HeroScrollCue />

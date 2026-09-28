@@ -4,8 +4,8 @@ import { getProjectTag, type Project } from "@/content/projects";
 import { MediaGallery } from "@/components/projects/media-gallery";
 import { TagPill } from "@/components/projects/tag-pill";
 import { TechStack } from "@/components/projects/tech-stack";
-import Link from "next/link";
 import { useSyncExternalStore, type MouseEvent } from "react";
+import { ArrowChip } from "@/components/arrow-chip";
 
 const REDUCED_MOTION_MEDIA_QUERY = "(prefers-reduced-motion: reduce)";
 function subscribeReducedMotion(onChange: () => void) {
@@ -135,12 +135,9 @@ export function ProjectDetail({
                   </dl>
                 )}
                 {variant === "modal" && (
-                  <Link
-                    href={`/projects/${project.slug}`}
-                    className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-bright"
-                  >
+                  <ArrowChip href={`/projects/${project.slug}`}>
                     View full page
-                  </Link>
+                  </ArrowChip>
                 )}
               </div>
             </div>
@@ -167,15 +164,9 @@ export function ProjectDetail({
                 {project.links && project.links.length > 0 && (
                   <div className="flex flex-wrap gap-3 pt-2">
                     {project.links.map((link) => (
-                      <a
-                        key={link.href}
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-full bg-accent px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-bright"
-                      >
+                      <ArrowChip key={link.href} href={link.href} external>
                         {link.label}
-                      </a>
+                      </ArrowChip>
                     ))}
                   </div>
                 )}

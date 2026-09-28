@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type SyntheticEvent } from "react";
+import { ArrowChip } from "@/components/arrow-chip";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -135,13 +136,9 @@ export function ContactForm() {
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={status === "loading"}
-        className="rounded-full bg-accent px-6 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-accent-bright disabled:cursor-not-allowed disabled:opacity-70"
-      >
+      <ArrowChip type="submit" disabled={status === "loading"}>
         {status === "loading" ? "Sending..." : "Send Message"}
-      </button>
+      </ArrowChip>
 
       {status === "success" && (
         <p
