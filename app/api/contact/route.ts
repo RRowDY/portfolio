@@ -7,7 +7,6 @@ import {
   isHoneypotFilled,
 } from "@/lib/contact";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const isOverContactLimit = createRateLimiter(5, 10 * 60 * 1000);
 
 type ContactBody = {
@@ -37,6 +36,7 @@ export async function POST(request: Request) {
     );
   }
 
+  const resend = new Resend(apiKey);
   let body: ContactBody;
   try {
     body = await request.json();
