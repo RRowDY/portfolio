@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { ProjectSummary } from "./projects.ts";
 import { filterProjectsByTags } from "./filter-projects.ts";
-const projects = [
+
+const projects: ProjectSummary[] = [
   {
     slug: "one",
     title: "One",
