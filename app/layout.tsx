@@ -3,6 +3,7 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { CustomCursor } from "@/components/custom-cursor";
+import { DotPattern } from "@/components/dot-pattern";
 
 const interFont = Inter({
   variable: "--font-inter",
@@ -26,6 +27,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${interFont.variable} ${plusJakartaSansFont.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans text-foreground">
+        <div
+          className="pointer-events-none fixed inset-0 -z-10"
+          aria-hidden="true"
+        >
+          <DotPattern
+            glow
+            width={22}
+            height={22}
+            className="[mask-image:radial-gradient(ellipse_at_center,white,transparent_42%)]"
+          />
+        </div>
         <CustomCursor />
         <SiteHeader />
         {children}

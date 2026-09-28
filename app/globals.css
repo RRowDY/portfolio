@@ -26,6 +26,17 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-plus-jakarta-sans), var(--font-sans);
   --animate-scroll-hint-line: scroll-hint-line 1.6s ease-out infinite;
+  --animate-dot-glow: dot-glow 3.6s ease-in-out infinite;
+}
+
+@keyframes dot-glow {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.9;
+  }
 }
 
 @keyframes scroll-hint-line {
