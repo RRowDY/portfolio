@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useState } from "react";
 import { site } from "@/content/site";
+import { ArrowChip } from "@/components/arrow-chip";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import {
   TYPEWRITER_DURATION_MS,
@@ -97,6 +98,24 @@ export function AboutMeSection() {
             </li>
           ))}
         </ul>
+        <div
+          className={[
+            "mt-10 flex flex-col items-center gap-4 sm:mt-12",
+            "motion-safe:transition-[opacity,translate] motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)]",
+            "motion-reduce:transition-none",
+            bodyDone
+              ? "translate-y-0 opacity-100"
+              : "pointer-events-none translate-y-[2.25rem] opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100",
+          ].join(" ")}
+          style={{
+            transitionDelay: bodyDone
+              ? `${site.about.highlights.length * 140}ms`
+              : "0ms",
+          }}
+        >
+          <p className="text-sm text-muted">Have a project in mind?</p>
+          <ArrowChip href="/contact">Get in touch</ArrowChip>
+        </div>
       </div>
     </section>
   );
