@@ -1,20 +1,28 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import {
+  contactEmailHtml,
+  contactFieldErrors,
+  createRateLimiter,
+  isHoneypotFilled,
+} from "@/lib/contact";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const isOverContactLimit = createRateLimiter(5, 10 * 60 * 1000);
 
 type ContactBody = {
   name?: string;
   email?: string;
   message?: string;
+  company?: string;
 };
 
-function isValidEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
+function clientAddress(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  const first = forwarded?.split(",")[0]?.trim();
+  if (first) return first;
 
-function isLettersOnly(name: string): boolean {
-  return /^[A-Za-z]+(?: [A-Za-z]+)*$/.test(name);
+  return request.headers.get("x-real-ip") ?? "unknown";
 }
 
 export async function POST(request: Request) {
@@ -39,44 +47,24 @@ export async function POST(request: Request) {
     );
   }
 
+  if (isHoneypotFilled(body.company)) {
+    return NextResponse.json({ ok: true }, { status: 200 });
+  }
+
   const name = body.name?.trim() ?? "";
   const email = body.email?.trim() ?? "";
   const message = body.message?.trim() ?? "";
-
-  const fields: Partial<Record<"name" | "email" | "message", string>> = {};
-  const missing: Array<"name" | "email" | "message"> = [];
-
-  if (!name) missing.push("name");
-  if (!email) missing.push("email");
-  if (!message) missing.push("message");
-
-  if (missing.length > 1) {
-    for (const field of missing) {
-      fields[field] = "One or more fields are missing";
-    }
-  } else if (missing[0] === "name") {
-    fields.name = "Name is required";
-  } else if (missing[0] === "email") {
-    fields.email = "Email is required";
-  } else if (missing[0] === "message") {
-    fields.message = "Message is required";
-  }
-
-  if (name && !isLettersOnly(name))
-    fields.name = "Name can only contain letters";
-  else if (name.length > 120)
-    fields.name = "Name must be less than 120 characters";
-
-  if (email && (!isValidEmail(email) || email.length > 254))
-    fields.email = "Enter a valid email address";
-
-  if (message && message.length < 10)
-    fields.message = "Message must be at least 10 characters";
-  else if (message.length > 5000)
-    fields.message = "Message must be less than 5000 characters";
+  const fields = contactFieldErrors({ name, email, message });
 
   if (Object.keys(fields).length > 0) {
     return NextResponse.json({ fields }, { status: 400 });
+  }
+
+  if (isOverContactLimit(clientAddress(request))) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 },
+    );
   }
 
   const { error } = await resend.emails.send({
@@ -85,15 +73,11 @@ export async function POST(request: Request) {
     replyTo: email,
     subject: `New message from ${name}`,
     text: `From: ${name} <${email}>\n\n${message}`,
-    html: `
-      <p><strong>From:</strong> ${name} &lt;${email}&gt;</p>
-      <p><strong>Message:</strong></p>
-      <p>${message.replace(/\n/g, "<br>")}</p>
-    `,
+    html: contactEmailHtml(name, email, message),
   });
 
   if (error) {
-    console.error("Resent error:", error);
+    console.error("Resend error:", error);
     return NextResponse.json(
       { error: "Failed to send email. Please try again later." },
       { status: 502 },

@@ -1,58 +1,21 @@
 "use client";
 
-import { useState, type SyntheticEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { ArrowChip } from "@/components/arrow-chip";
+import {
+  contactFieldErrors,
+  type ContactField,
+  type ContactFieldErrors,
+} from "@/lib/contact";
 
 type Status = "idle" | "loading" | "success" | "error";
-
-type FieldName = "name" | "email" | "message";
-type FieldErrors = Partial<Record<FieldName, string>>;
-
-function problemsFor(payload: {
-  name: string;
-  email: string;
-  message: string;
-}): FieldErrors {
-  const fields: FieldErrors = {};
-  const missing: FieldName[] = [];
-
-  if (!payload.name) missing.push("name");
-  if (!payload.email) missing.push("email");
-  if (!payload.message) missing.push("message");
-
-  const requiredMessage: Record<FieldName, string> = {
-    name: "Name is required",
-    email: "Email is required",
-    message: "Message is required",
-  };
-  for (const field of missing) {
-    fields[field] = requiredMessage[field];
-  }
-
-  if (payload.name && !/^[A-Za-z]+(?:[A-Za-z]+)*$/.test(payload.name))
-    fields.name = "Name can only contain letters";
-  else if (payload.name.length > 120)
-    fields.name = "Keep the name under 120 characters";
-  if (
-    payload.email &&
-    (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email) ||
-      payload.email.length > 254)
-  )
-    fields.email = "Enter a valid email address";
-  if (payload.message && payload.message.length < 10)
-    fields.message = "Write at least 10 characters";
-  else if (payload.message.length > 5000)
-    fields.message = "Keep the message under 5000 characters";
-
-  return fields;
-}
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({});
 
-  function clearField(field: FieldName) {
+  function clearField(field: ContactField) {
     setFieldErrors((current) => {
       if (!current[field]) return current;
       const next = { ...current };
@@ -61,12 +24,12 @@ export function ContactForm() {
     });
   }
 
-  async function onSubmit(event: SyntheticEvent) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("loading");
     setErrorMessage("");
 
-    const form = event.currentTarget as HTMLFormElement;
+    const form = event.currentTarget;
     const formData = new FormData(form);
 
     // Honeypot protection
@@ -82,7 +45,7 @@ export function ContactForm() {
       message: String(formData.get("message") ?? "").trim(),
     };
 
-    const problems = problemsFor(payload);
+    const problems = contactFieldErrors(payload);
     if (Object.keys(problems).length > 0) {
       setFieldErrors(problems);
       setStatus("idle");
@@ -100,7 +63,7 @@ export function ContactForm() {
 
       const data = (await res.json()) as {
         error?: string;
-        fields?: FieldErrors;
+        fields?: ContactFieldErrors;
       };
 
       if (!res.ok) {
@@ -126,7 +89,7 @@ export function ContactForm() {
     }
   }
 
-  function controlClass(field: FieldName, extra = "") {
+  function controlClass(field: ContactField, extra = "") {
     const border = fieldErrors[field] ? "border-red-400/40" : "border-border";
     return [
       "w-full rounded-lg border bg-elevated/50 px-4 py-2.5 text-foreground placeholder:text-subtle outline-none transition-[border-color,box-shadow] duration-200 focus:border-accent/60 focus:ring-2 focus:ring-accent/20 disabled:opacity-60",
