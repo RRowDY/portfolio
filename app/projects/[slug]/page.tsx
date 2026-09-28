@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProjectDetail } from "@/components/projects/project-detail";
-import { getProjectBySlug, projects } from "@/content/projec-entries";
+import { getProjectBySlug, projects } from "@/content/project-entries";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
