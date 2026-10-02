@@ -7,11 +7,19 @@ import { filterProjectsByTags } from "@/content/filter-projects";
 import { ProjectCard } from "@/components/projects/project-card";
 import { ProjectModal } from "@/components/projects/project-modal";
 import { TagFilter } from "@/components/projects/tag-filter";
+import { ScrollReveal } from "@/components/scroll-reveal";
 
 type ProjectsSectionProps = {
   summaries: ProjectSummary[];
   openProject: Project | null;
 };
+
+function countLabel(shown: number, total: number) {
+  const noun = total === 1 ? "project" : "projects";
+  if (shown === total) return `${total} ${noun}`;
+  return `Showing ${shown} of ${total} ${noun}`;
+}
+
 export function ProjectsSection({
   summaries,
   openProject,
@@ -46,22 +54,28 @@ export function ProjectsSection({
 
   return (
     <>
-      <div className="mt-8">
+      <div className="mt-12 flex flex-col items-center gap-4">
         <TagFilter selectedIds={selectedTagIds} onChange={setSelectedTagIds} />
+        <p aria-live="polite" className="text-sm text-subtle">
+          {countLabel(filteredProjects.length, summaries.length)}
+        </p>
       </div>
 
       {filteredProjects.length === 0 ? (
-        <p className="mt-10 text-muted">No projects match these tags.</p>
+        <p className="mt-12 text-center text-muted">
+          No projects match these tags.
+        </p>
       ) : (
-        <div className="mt-12 flex flex-col gap-8 text-left">
+        <div className="mt-10 flex flex-col gap-8 text-left">
           {filteredProjects.map((project, index) => (
-            <ProjectCard
-              key={project.slug}
-              project={project}
-              flipped={index % 2 === 1}
-              onSelect={() => openModal(project.slug)}
-              priority={index === 0}
-            />
+            <ScrollReveal key={project.slug}>
+              <ProjectCard
+                project={project}
+                flipped={index % 2 === 1}
+                onSelect={() => openModal(project.slug)}
+                priority={index === 0}
+              />
+            </ScrollReveal>
           ))}
         </div>
       )}

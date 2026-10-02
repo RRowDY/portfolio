@@ -42,13 +42,25 @@ export default async function ProjectPage({ params }: PageProps) {
   }
 
   return (
-    <main className="flex flex-col px-6 py-16 sm:px-10 lg:px-16">
+    <main className="flex flex-1 flex-col px-6 py-20 sm:px-10 sm:py-24 lg:px-16">
       <div className="mx-auto w-full max-w-4xl">
         <Link
           href="/projects"
-          className="text-sm font-medium text-muted transition-colors hover:text-accent-bright"
+          className="group inline-flex items-center gap-2 rounded-md text-sm font-medium text-muted outline-none transition-colors duration-200 hover:text-accent-bright focus-visible:text-accent-bright focus-visible:ring-2 focus-visible:ring-accent/50"
         >
-          ← Back to projects
+          <svg
+            viewBox="0 0 16 16"
+            aria-hidden="true"
+            className="size-3.5 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12.5 8h-9M7.5 4.5 3.5 8l4 3.5" />
+          </svg>
+          Back to projects
         </Link>
 
         <div className="mt-10">

@@ -5,8 +5,8 @@ type TechIconTileProps = {
   size?: "md" | "sm";
 };
 export function TechIconTile({ name, Icon, size = "md" }: TechIconTileProps) {
-  const tileSize = size === "sm" ? "size-10" : "size-16";
-  const iconSize = size === "sm" ? "size-5" : "size-8";
+  const tileSize = size === "sm" ? "size-10" : "size-14";
+  const iconSize = size === "sm" ? "size-5" : "size-7";
   return (
     <div
       className="group relative flex flex-col items-center"
@@ -16,7 +16,7 @@ export function TechIconTile({ name, Icon, size = "md" }: TechIconTileProps) {
         className={[
           "flex items-center justify-center rounded-xl border border-transparent",
           tileSize,
-          "text-muted transition-[transform,color,border-color,box-shadow] duration-200 ease-in-out",
+          "text-foreground/75 transition-[transform,color,border-color,box-shadow] duration-200 ease-in-out",
           "group-hover:scale-105 group-hover:border-accent group-hover:text-accent",
           "group-focus-within:scale-105 group-focus-within:border-accent group-focus-within:text-accent",
           "motion-reduce:transition-none motion-reduce:group-hover:scale-100",

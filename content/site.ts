@@ -1,30 +1,34 @@
 export const site = {
+  tab: "Joshua's Portfolio",
   name: "Joshua",
   description:
-    "I'm a junior software and web developer. I build sites and interfaces, and I'm working toward full stack and apps.",
+    "Software and web developer building sites and interfaces, with a path toward full-stack work.",
+  footerTagline:
+    "Software and web developer. I build sites and interfaces that stay clear as they grow.",
+  featuredSlugs: ["project-1", "project-2"],
   about: {
-    lead: "I'm Joshua, a freelance designer and developer specializing in brand identity and website design and development.",
-    body: "I handle both design and development, which keeps the final product faithful to the original vision. My work is grounded in clear layouts, intuitive navigation, and careful attention to detail.",
+    lead: "I'm Joshua, a software and web developer. I build sites and interfaces, and design is one of the skills I use to keep them clear.",
+    body: "I handle layout and implementation together, so what ships stays close to the plan. The work is grounded in readable structure, straightforward navigation, and careful detail.",
     highlights: [
       {
-        label: "Brand Identity",
-        title: "Cohesive visual systems",
-        text: "Logo design, color, and typography developed as a unified system, so your brand stays consistent across your website and every other touchpoint.",
+        label: "Software & web",
+        title: "Sites and interfaces",
+        text: "I build websites and application interfaces that stay readable and reliable across screen sizes.",
       },
       {
-        label: "Website Design & Development",
-        title: "Responsive, well-built websites",
-        text: "From initial layout to launch, I build sites that perform reliably and read clearly on every screen size.",
+        label: "Design sensibility",
+        title: "Visual choices that support the product",
+        text: "Color, type, and layout stay consistent so an interface is easy to scan. Design supports the software I build.",
       },
       {
-        label: "User Experience",
+        label: "User experience",
         title: "Interfaces that are easy to use",
-        text: "Navigation, empty states, and small interactions are designed so users can complete tasks without confusion.",
+        text: "Navigation, empty states, and small interactions are shaped so people can finish a task without confusion.",
       },
       {
-        label: "Technical Focus",
-        title: "Front end expertise, expanding to full stack",
-        text: "My core strength is front-end development. I am extending my work into APIs, databases, and server-side logic to deliver more of each project end to end.",
+        label: "Technical focus",
+        title: "Front end first, expanding to full stack",
+        text: "My core strength is front-end development. I am extending into APIs, databases, and server-side logic so more of each project can ship end to end.",
       },
     ],
   },

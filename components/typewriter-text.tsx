@@ -1,24 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
-// Duration for the typewriter animation in milliseconds (1.2 seconds)
-export const TYPEWRITER_DURATION_MS = 1200;
-const REDUCED_MOTION_MEDIA_QUERY = "(prefers-reduced-motion: reduce)";
-
-function subscribeReducedMotion(onChange: () => void) {
-  const media = window.matchMedia(REDUCED_MOTION_MEDIA_QUERY);
-  media.addEventListener("change", onChange);
-  return () => media.removeEventListener("change", onChange);
-}
-
-function getReducedMotionSnapshot() {
-  return window.matchMedia(REDUCED_MOTION_MEDIA_QUERY).matches;
-}
-
-function getReducedMotionServerSnapshot() {
-  return false;
-}
+// Duration for the typewriter animation in milliseconds.
+export const TYPEWRITER_DURATION_MS = 700;
 
 type TypewriterTextProps = {
   text: string;
@@ -37,11 +23,7 @@ export function TypewriterText({
 }: TypewriterTextProps) {
   const ref = useRef<HTMLParagraphElement>(null);
   const [shown, setShown] = useState(0);
-  const reduceMotion = useSyncExternalStore(
-    subscribeReducedMotion,
-    getReducedMotionSnapshot,
-    getReducedMotionServerSnapshot,
-  );
+  const reduceMotion = useReducedMotion(false);
 
   useEffect(() => {
     if (!reduceMotion) return;
@@ -129,25 +111,29 @@ export function TypewriterText({
 
   return (
     <p ref={ref} className={className}>
-      {Array.from(text).map((char, index) => {
-        const showCaret = !done && index === caretIndex;
-        return (
-          <span key={index} className={showCaret ? "relative" : undefined}>
-            <span style={{ opacity: index < visibleCount ? 1 : 0 }}>
-              {char}
+      {/* The animated copy is split per character, which reads as individual
+          letters to assistive tech, so expose the sentence separately. */}
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true">
+        {Array.from(text).map((char, index) => {
+          const showCaret = !done && index === caretIndex;
+          return (
+            <span key={index} className={showCaret ? "relative" : undefined}>
+              <span style={{ opacity: index < visibleCount ? 1 : 0 }}>
+                {char}
+              </span>
+              {showCaret ? (
+                <span
+                  className={[
+                    "absolute top-[0.1em] h-[0.9em] w-0.5 bg-accent-bright motion-safe:animate-pulse",
+                    visibleCount === 0 ? "left-0" : "left-full",
+                  ].join(" ")}
+                />
+              ) : null}
             </span>
-            {showCaret ? (
-              <span
-                aria-hidden
-                className={[
-                  "absolute top-[0.1em] h-[0.9em] w-0.5 bg-accent-bright motion-safe:animate-pulse",
-                  visibleCount === 0 ? "left-0" : "left-full",
-                ].join(" ")}
-              />
-            ) : null}
-          </span>
-        );
-      })}
+          );
+        })}
+      </span>
     </p>
   );
 }

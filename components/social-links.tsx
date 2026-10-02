@@ -1,5 +1,4 @@
 import { site } from "@/content/site";
-// import { socialIconById, type SocialIconId } from "@/components/icons/social-icons";
 import type { IconType } from "react-icons";
 import { FaLinkedinIn } from "react-icons/fa6";
 import { SiGithub } from "react-icons/si";
@@ -26,20 +25,27 @@ function labelClass(expandLeft: boolean) {
   ].join(" ");
 }
 
-export function HeroSocialLinks() {
+type SocialLinksProps = {
+  className?: string;
+};
+
+export function SocialLinks({ className }: SocialLinksProps) {
   const links = site.socialLinks;
 
   if (!links?.length) return null;
 
   return (
     <div
-      className="mt-6 flex flex-wrap items-center gap-0"
+      className={["flex flex-wrap items-center", className]
+        .filter(Boolean)
+        .join(" ")}
       role="list"
       aria-label="Social profiles"
     >
       {links.map((link) => {
         const Icon = socialIconById[link.id as SocialIconId];
-        const expandLeft = link.id === "github";
+        // The first link expands its label leftwards so the pair stays centered.
+        const expandLeft = link.id === links[0].id;
         return (
           <a
             key={link.id}

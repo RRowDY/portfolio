@@ -3,24 +3,12 @@
 import Image from "next/image";
 import { FaLink } from "react-icons/fa6";
 import { SiGithub } from "react-icons/si";
-import { useSyncExternalStore, useRef, useState, type MouseEvent } from "react";
+import { useRef, useState, type MouseEvent } from "react";
 import { getProjectTag, type ProjectSummary } from "@/content/projects";
 import { getTechById } from "@/content/tech";
 import { TagPill } from "@/components/projects/tag-pill";
 import { TechIconTile } from "@/components/tech-icon-tile";
-
-const REDUCED_MOTION_MEDIA_QUERY = "(prefers-reduced-motion: reduce)";
-function subscribeReducedMotion(onChange: () => void) {
-  const media = window.matchMedia(REDUCED_MOTION_MEDIA_QUERY);
-  media.addEventListener("change", onChange);
-  return () => media.removeEventListener("change", onChange);
-}
-function getReducedMotionSnapshot() {
-  return window.matchMedia(REDUCED_MOTION_MEDIA_QUERY).matches;
-}
-function getReducedMotionServerSnapshot() {
-  return true;
-}
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 type ProjectCardProps = {
   project: ProjectSummary;
@@ -42,11 +30,7 @@ export function ProjectCard({
 }: ProjectCardProps) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
-  const reduceMotion = useSyncExternalStore(
-    subscribeReducedMotion,
-    getReducedMotionSnapshot,
-    getReducedMotionServerSnapshot,
-  );
+  const reduceMotion = useReducedMotion();
 
   function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
     if (reduceMotion || !frameRef.current) return;
@@ -107,45 +91,15 @@ export function ProjectCard({
             background:
               "radial-gradient(260px circle at var(--spot-x, -1000px) var(--spot-y, -1000px), var(--accent-glow), transparent 70%)",
           }}
-        />{" "}
-        {project.links && project.links.length > 0 && (
-          <div
-            className={[
-              "absolute top-6 z-10 flex gap-2",
-              flipped ? "left-6 lg:left-auto lg:right-6" : "left-6",
-            ].join(" ")}
-          >
-            {project.links.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={link.label}
-                className="flex size-10 items-center justify-center rounded-full bg-foreground text-background transition-transform hover:scale-105"
-              >
-                <LinkIcon href={link.href} />
-              </a>
-            ))}
-          </div>
-        )}
-        <button
-          type="button"
-          onClick={onSelect}
-          disabled={!interactive}
+        />
+        <div
           className={[
-            "flex w-full flex-col gap-6 p-5 text-left sm:p-8 lg:flex-row lg:items-center lg:gap-10",
+            "pointer-events-none relative z-10 flex w-full flex-col gap-6 p-5 sm:p-8 lg:flex-row lg:items-center lg:gap-10",
             flipped ? "lg:flex-row-reverse" : "",
-            interactive ? "cursor-pointer" : "",
           ].join(" ")}
         >
-          <div
-            className={[
-              "flex min-w-0 flex-1 flex-col gap-4",
-              project.links && project.links.length > 0 ? "pt-14" : "",
-            ].join(" ")}
-          >
-            <div className="flex flex-wrap gap-2">
+          <div className="flex min-w-0 flex-1 flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-2">
               {project.tags.map((tagId) => {
                 const tag = getProjectTag(tagId);
                 if (!tag) return null;
@@ -157,6 +111,22 @@ export function ProjectCard({
                   />
                 );
               })}
+              {project.links && project.links.length > 0 && (
+                <div className="pointer-events-auto relative z-20 ml-1 flex shrink-0 gap-2">
+                  {project.links.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={link.label}
+                      className="flex size-8 items-center justify-center rounded-full border border-border bg-background text-foreground outline-none transition-colors duration-200 hover:border-accent/50 hover:text-accent-bright focus-visible:border-accent/50 focus-visible:ring-2 focus-visible:ring-accent/50"
+                    >
+                      <LinkIcon href={link.href} />
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
 
             <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
@@ -182,7 +152,8 @@ export function ProjectCard({
           </div>
           <div
             ref={frameRef}
-            className="relative aspect-video w-full shrink-0 overflow-hidden rounded-xl border border-border bg-background lg:w-[52%]"
+            className="pointer-events-auto relative aspect-video w-full shrink-0 cursor-pointer overflow-hidden rounded-xl border border-border bg-background lg:w-[52%]"
+            onClick={interactive ? onSelect : undefined}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             style={
@@ -204,7 +175,15 @@ export function ProjectCard({
               priority={priority}
             />
           </div>
-        </button>
+        </div>
+        {interactive ? (
+          <button
+            type="button"
+            onClick={onSelect}
+            aria-label={`Open ${project.title}`}
+            className="absolute inset-0 z-0 cursor-pointer rounded-[inherit] focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:outline-none"
+          />
+        ) : null}
       </div>
     </article>
   );

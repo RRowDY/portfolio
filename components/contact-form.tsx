@@ -92,7 +92,7 @@ export function ContactForm() {
   function controlClass(field: ContactField, extra = "") {
     const border = fieldErrors[field] ? "border-red-400/40" : "border-border";
     return [
-      "w-full rounded-lg border bg-elevated/50 px-4 py-2.5 text-foreground placeholder:text-subtle outline-none transition-[border-color,box-shadow] duration-200 focus:border-accent/60 focus:ring-2 focus:ring-accent/20 disabled:opacity-60",
+      "w-full rounded-xl border bg-background/60 px-4 py-2.5 text-foreground placeholder:text-subtle outline-none transition-[border-color,box-shadow] duration-200 focus:border-accent/60 focus:ring-2 focus:ring-accent/20 disabled:opacity-60",
       border,
       extra,
     ]
@@ -101,7 +101,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mt-8 space-y-6" noValidate>
+    <form onSubmit={onSubmit} className="space-y-6" noValidate>
       {/* Honeypot protection */}
       <div
         className="absolute -left-[9999px] h-0 w-0 overflow-hidden"
@@ -194,7 +194,7 @@ export function ContactForm() {
           required
           rows={5}
           disabled={status === "loading"}
-          className={controlClass("message", "resize-y min-h-[120px]")}
+          className={controlClass("message", "min-h-[120px] resize-y")}
           aria-invalid={Boolean(fieldErrors.message)}
           aria-describedby={fieldErrors.message ? "message-error" : undefined}
           onChange={() => clearField("message")}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import { CustomCursor } from "@/components/custom-cursor";
 import { DotPattern } from "@/components/dot-pattern";
 import { site } from "@/content/site";
@@ -17,7 +18,7 @@ const plusJakartaSansFont = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: site.name,
+  title: site.tab,
   description: site.description,
 };
 
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <CustomCursor />
         <SiteHeader />
         {children}
+        <SiteFooter />
       </body>
     </html>
   );

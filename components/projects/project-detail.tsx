@@ -4,21 +4,9 @@ import { getProjectTag, type Project } from "@/content/projects";
 import { MediaGallery } from "@/components/projects/media-gallery";
 import { TagPill } from "@/components/projects/tag-pill";
 import { TechStack } from "@/components/projects/tech-stack";
-import { useSyncExternalStore, type MouseEvent } from "react";
+import { type MouseEvent } from "react";
 import { ArrowChip } from "@/components/arrow-chip";
-
-const REDUCED_MOTION_MEDIA_QUERY = "(prefers-reduced-motion: reduce)";
-function subscribeReducedMotion(onChange: () => void) {
-  const media = window.matchMedia(REDUCED_MOTION_MEDIA_QUERY);
-  media.addEventListener("change", onChange);
-  return () => media.removeEventListener("change", onChange);
-}
-function getReducedMotionSnapshot() {
-  return window.matchMedia(REDUCED_MOTION_MEDIA_QUERY).matches;
-}
-function getReducedMotionServerSnapshot() {
-  return true;
-}
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 type ProjectDetailProps = {
   project: Project;
@@ -38,11 +26,7 @@ export function ProjectDetail({
 
   const titleId = `project-title-${project.slug}`;
   const TitleTag = variant === "page" ? "h1" : "h2";
-  const reduceMotion = useSyncExternalStore(
-    subscribeReducedMotion,
-    getReducedMotionSnapshot,
-    getReducedMotionServerSnapshot,
-  );
+  const reduceMotion = useReducedMotion();
   function handleSpotlightMove(event: MouseEvent<HTMLElement>) {
     if (reduceMotion) return;
     const rect = event.currentTarget.getBoundingClientRect();
@@ -96,28 +80,32 @@ export function ProjectDetail({
             variant === "modal" ? "max-h-[inherit] overflow-y-auto" : undefined
           }
         >
-          <MediaGallery
-            key={project.slug}
-            images={gallery}
-            onClose={onClose}
-            flush={variant === "modal"}
-            priority={variant === "page"}
-          />
-          <div
-            className={
-              variant === "modal" ? "space-y-6 p-5 sm:p-8" : "mt-8 space-y-6"
-            }
-          >
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {variant === "modal" ? (
+            <MediaGallery
+              key={project.slug}
+              images={gallery}
+              onClose={onClose}
+              flush
+            />
+          ) : null}
+          <div className="space-y-6 p-5 sm:p-8">
+            {variant === "page" ? (
+              <MediaGallery
+                key={project.slug}
+                images={gallery}
+                priority
+              />
+            ) : null}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <TitleTag
                 id={titleId}
-                className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"
+                className="min-w-0 font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"
               >
                 {project.title}
               </TitleTag>
-              <div className="flex flex-wrap items-center gap-6 sm:gap-8">
+              <div className="flex shrink-0 flex-wrap items-center gap-6 sm:gap-8">
                 {(project.client || project.completedAt) && (
-                  <dl className="flex gap-8 text-center text-sm">
+                  <dl className="flex gap-6 text-right text-sm sm:gap-8">
                     {project.client && (
                       <div>
                         <dt className="text-xs text-subtle">Client</dt>

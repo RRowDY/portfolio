@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import { site } from "@/content/site";
 import { ArrowChip } from "@/components/arrow-chip";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { SectionHeading } from "@/components/section-heading";
 import {
   TYPEWRITER_DURATION_MS,
   TypewriterText,
@@ -16,9 +17,9 @@ function AboutHighlightCard({
   return (
     <div
       className={[
-        "h-full rounded-2xl border border-border bg-elevated p-5 text-left",
+        "flex h-full flex-col rounded-2xl border border-border bg-elevated p-5 text-left",
         "transition-colors duration-300 ease-out motion-reduce:transition-none",
-        "hover:border-accent/20 hover:bg-[color-mix(in_srgb,var(--accent)_5%,var(--bg-elevated))]",
+        "hover:border-accent/30 hover:bg-[color-mix(in_srgb,var(--accent)_5%,var(--bg-elevated))]",
       ].join(" ")}
     >
       <p className="text-xs font-medium uppercase tracking-wider text-accent-bright">
@@ -34,28 +35,22 @@ function AboutHighlightCard({
 
 export function AboutMeSection() {
   const [leadDone, setLeadDone] = useState(false);
-  const [bodyDone, setBodyDone] = useState(false);
   const handleLeadComplete = useCallback((complete: boolean) => {
     setLeadDone(complete);
-    if (!complete) setBodyDone(false);
-  }, []);
-  const handleBodyComplete = useCallback((complete: boolean) => {
-    setBodyDone(complete);
   }, []);
   return (
     <section
-      className="flex min-h-[calc(100dvh-4rem)] snap-start scroll-mt-16 flex-col items-center justify-center px-6 py-12 text-center sm:px-10 lg:px-16"
+      id="about"
+      className="scroll-mt-24 px-6 pt-12 pb-20 text-center sm:px-10 sm:pt-14 sm:pb-24 lg:px-16"
       aria-labelledby="about-me-heading"
     >
       <div className="mx-auto w-full max-w-6xl">
         <ScrollReveal>
-          <p className="text-sm font-medium text-accent-bright">About</p>
-          <h2
+          <SectionHeading
+            eyebrow="About"
             id="about-me-heading"
-            className="mt-3 font-display text-5xl font-semibold tracking-tight text-foreground sm:text-6xl"
-          >
-            About Me
-          </h2>
+            title="About Me"
+          />
           <TypewriterText
             text={site.about.lead}
             className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted sm:text-xl sm:leading-9"
@@ -73,26 +68,28 @@ export function AboutMeSection() {
             key={leadDone ? "body-on" : "body-off"}
             text={site.about.body}
             play={leadDone}
-            onComplete={handleBodyComplete}
-            durationMs={Math.round(
-              TYPEWRITER_DURATION_MS *
-                (site.about.body.length / site.about.lead.length),
+            durationMs={Math.min(
+              1400,
+              Math.round(
+                TYPEWRITER_DURATION_MS *
+                  (site.about.body.length / site.about.lead.length),
+              ),
             )}
             className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted sm:text-xl sm:leading-9"
           />
         </ScrollReveal>
-        <ul className="mt-12 grid grid-cols-1 gap-4 sm:mt-14 sm:grid-cols-4 sm:gap-5">
+        <ul className="mt-12 grid grid-cols-1 gap-4 sm:mt-14 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
           {site.about.highlights.map((item, index) => (
             <li
               key={item.label}
               className={[
                 "motion-safe:transition-[opacity,translate] motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)]",
-                "motion-reduce:transition-none",
-                bodyDone
+                "motion-reduce:pointer-events-auto motion-reduce:transition-none",
+                leadDone
                   ? "translate-y-0 opacity-100"
                   : "pointer-events-none translate-y-[2.25rem] opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100",
               ].join(" ")}
-              style={{ transitionDelay: bodyDone ? `${index * 140}ms` : "0ms" }}
+              style={{ transitionDelay: leadDone ? `${index * 140}ms` : "0ms" }}
             >
               <AboutHighlightCard item={item} />
             </li>
@@ -100,15 +97,15 @@ export function AboutMeSection() {
         </ul>
         <div
           className={[
-            "mt-10 flex flex-col items-center gap-4 sm:mt-12",
+            "mt-12 flex flex-col items-center gap-4",
             "motion-safe:transition-[opacity,translate] motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)]",
-            "motion-reduce:transition-none",
-            bodyDone
+            "motion-reduce:pointer-events-auto motion-reduce:transition-none",
+            leadDone
               ? "translate-y-0 opacity-100"
               : "pointer-events-none translate-y-[2.25rem] opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100",
           ].join(" ")}
           style={{
-            transitionDelay: bodyDone
+            transitionDelay: leadDone
               ? `${site.about.highlights.length * 140}ms`
               : "0ms",
           }}

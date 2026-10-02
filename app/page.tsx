@@ -1,7 +1,9 @@
 import { site } from "@/content/site";
-import { HeroSocialLinks } from "@/components/hero-social-links";
+import { SocialLinks } from "@/components/social-links";
 import { HeroScrollCue } from "@/components/hero-scroll-cue";
+import { FeaturedProjectPeek } from "@/components/featured-project-peek";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { SectionHeading } from "@/components/section-heading";
 import { AboutMeSection } from "@/components/about-me-section";
 import { TechIconTile } from "@/components/tech-icon-tile";
 import {
@@ -19,38 +21,36 @@ const techCategories = techCategoryOrder.map((categoryId) => ({
 function TechStackSection() {
   return (
     <section
-      className="flex min-h-[calc(100dvh-4rem)] snap-start scroll-mt-16 flex-col items-center justify-center px-6 py-12 text-center sm:px-10 lg:px-16"
+      className="scroll-mt-24 px-6 py-20 sm:px-10 sm:py-24 lg:px-16"
       aria-labelledby="tech-stack-heading"
     >
-      <div className="mx-auto w-full max-w-4xl">
+      <div className="mx-auto w-full max-w-5xl">
         <ScrollReveal>
-          <p className="text-sm font-medium text-accent-bright">Stack</p>
-          <h2
+          <SectionHeading
+            eyebrow="Stack"
             id="tech-stack-heading"
-            className="mt-3 font-display text-5xl font-semibold tracking-tight text-foreground sm:text-6xl"
-          >
-            Tech Stack
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted sm:text-xl sm:leading-9">
-            Languages and tools I reach for when building and shipping software.
-          </p>
+            title="Tech Stack"
+            intro="Languages and tools I reach for when building and shipping software."
+          />
         </ScrollReveal>
-        <div className="mt-12 flex flex-col items-center gap-10 sm:mt-14 sm:flex-row sm:items-start sm:justify-center sm:gap-16">
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:mt-14 sm:grid-cols-3 sm:gap-5">
           {techCategories.map((category) => (
-            <ScrollReveal key={category.title}>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted">
-                {category.title}
-              </h3>
-              <ul
-                className="mt-4 flex flex-wrap justify-center gap-3"
-                role="list"
-              >
-                {category.items.map(({ name, Icon }) => (
-                  <li key={name} role="listitem">
-                    <TechIconTile name={name} Icon={Icon} />
-                  </li>
-                ))}
-              </ul>
+            <ScrollReveal key={category.title} className="h-full">
+              <div className="h-full rounded-2xl border border-border bg-elevated p-6 text-center">
+                <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-subtle">
+                  {category.title}
+                </h3>
+                <ul
+                  className="mt-5 flex flex-wrap items-start justify-center gap-3"
+                  role="list"
+                >
+                  {category.items.map(({ name, Icon }) => (
+                    <li key={name} role="listitem">
+                      <TechIconTile name={name} Icon={Icon} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </ScrollReveal>
           ))}
         </div>
@@ -61,51 +61,30 @@ function TechStackSection() {
 
 export default function Home() {
   return (
-    // <main className="flex flex-1 flex-col px-6 py-24 sm:px-10 lg:px-16">
-    //   <div className="mx-auto w-full max-w-3xl">
-    //     <p className="text-sm font-medium text-accent-bright">Portfolio</p>
-    //     <h1 className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Hi, I'm <span className="text-accent-bright">{site.name}</span></h1>
-    //     <HeroSocialLinks />
-    //     <p className="mt-4 text-lg leading-8 text-muted">
-    //       {site.description}
-    //     </p>
-    //     <div className="mt-10 flex items-center gap-x-6">
-    //       <a
-    //         href="/projects"
-    //         className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-bright"
-    //       >
-    //         View projects
-    //       </a>
-    //       <a
-    //         href="/contact"
-    //         className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-bright"
-    //       >
-    //         Contact
-    //       </a>
-    //     </div>
     <main className="flex flex-1 flex-col">
       <section
-        className="relative flex min-h-[calc(100dvh-4rem)] snap-start scroll-mt-16 flex-col items-center justify-center px-6 py-12 text-center sm:px-10 lg:px-16"
+        className="flex min-h-[calc(100svh-14rem)] flex-col items-center justify-center gap-8 px-6 pt-10 pb-10 text-center sm:gap-10 sm:px-10 sm:pt-12 lg:px-16"
         aria-label="Introduction"
       >
-        <div className="mx-auto w-full max-w-4xl">
+        <div className="flex w-full max-w-3xl flex-col items-center">
           <p className="text-sm font-medium text-accent-bright">Portfolio</p>
-          <h1 className="mt-3 font-display text-5xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
+          <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
             Hi, I&apos;m <span className="text-accent-bright">{site.name}</span>
           </h1>
-          <div className="mt-8 flex justify-center">
-            <HeroSocialLinks />
-          </div>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted sm:text-xl sm:leading-9">
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-muted sm:text-xl sm:leading-9">
             {site.description}
           </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
             <ArrowChip href="/projects">View projects</ArrowChip>
             <ArrowChip href="/contact">Contact</ArrowChip>
           </div>
+          <SocialLinks className="mt-7 justify-center" />
         </div>
+
+        <FeaturedProjectPeek />
         <HeroScrollCue />
       </section>
+
       <AboutMeSection />
       <TechStackSection />
     </main>

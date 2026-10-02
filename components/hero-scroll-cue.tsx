@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown } from "react-icons/fa6";
 
 const TOP_THRESHOLD_PX = 32;
 
@@ -18,20 +18,21 @@ export function HeroScrollCue() {
   }, []);
 
   return (
-    <div
+    <a
+      href="#about"
       className={[
-        "pointer-events-none absolute inset-x-0 bottom-8 flex flex-col items-center gap-4",
-        "transition-opacity duration-500 ease-out motion-reduce:transition-none",
-        atTop ? "opacity-100" : "opacity-0",
+        "flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-elevated/70 text-muted outline-none backdrop-blur-sm",
+        "transition-[opacity,color,border-color] duration-300 ease-out motion-reduce:transition-none",
+        "hover:border-accent/50 hover:text-accent-bright",
+        "focus-visible:border-accent/50 focus-visible:text-accent-bright focus-visible:ring-2 focus-visible:ring-accent/50",
+        atTop ? "opacity-100" : "pointer-events-none opacity-0",
       ].join(" ")}
-      aria-hidden="true"
     >
-      <p className="text-xs font-medium uppercase tracking-[0.25rem] text-foreground/80">
-        Scroll
-      </p>
-      <div className="relative h-8 w-0.5 overflow-hidden">
-        <span className="absolute inset-x-0 top-0 block h-full bg-gradient-to-b from-accent-bright to-transparent drop-shadow-[0_0_4px_rgba(96,165,250,0.75)] motion-safe:animate-scroll-hint-line motion-reduce:animate-none" />
-      </div>
-    </div>
+      <span className="sr-only">Skip to the about section</span>
+      <FaChevronDown
+        aria-hidden="true"
+        className="size-3.5 motion-safe:animate-scroll-cue-bob"
+      />
+    </a>
   );
 }
